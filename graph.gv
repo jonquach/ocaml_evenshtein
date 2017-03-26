@@ -1,0 +1,6 @@
+graph G {
+node [shape=none]; {node [label="false"] f1; }
+node [shape=none]; {node [label="true" fontcolor=blue] }
+
+
+}
