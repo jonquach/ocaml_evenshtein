@@ -199,8 +199,15 @@ module Spellc = struct
     let delm = Array.make_matrix (n_total) (n_total) 0 in
     let insm = Array.make_matrix (n_total) (n_total) 0 in
     let tram = Array.make_matrix (n_total) (n_total) 0 in
-    (* Compléter par votre code *)
-    (* raise (Non_Implante "«gen_matrix» à compléter") *)
+    let l1 = word_pair_list file in
+    let list_op = List.map (fun (a,b)->(dist a b)) l1 in
+      List.iter (fun liste-> let (_,l) = liste in let rec aux l = match l with
+                  |x::r->(match x with
+                            | DEL (c1, c2) -> delm.(i_fromChar c1).(i_fromChar c2)<-1;aux r
+                            | INS (c1, c2) -> insm.(i_fromChar c1).(i_fromChar c2)<-1;aux r
+                            | SUB (c1, c2) -> subm.(i_fromChar c1).(i_fromChar c2)<-1;aux r
+                            | TRANS (c1, c2) -> tram.(i_fromChar c1).(i_fromChar c2)<-1;aux r)
+                  | []->() in aux l) list_op;
     subm, delm, insm, tram
 
   let subm, delm, insm, tram = gen_matrix misspell
