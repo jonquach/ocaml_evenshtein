@@ -117,7 +117,7 @@ module Spellc = struct
     Str.split (Str.regexp special_c) line
 
   let liste_words file =let liste = read_lines_file file in
-    let (l1,l2) = List.partition (fun x->x == []) (
+    let (l1,l2) = List.partition (fun x-> x == []) (
     List.map split_line (List.map String.lowercase liste)) in l2
 
 
@@ -161,8 +161,8 @@ module Spellc = struct
    let (l2,l3) = List.partition (fun x-> (String.length x) == 0) l1 in
    let l4 = List.map String.lowercase l3 in
       List.map (fun l-> match l with
-                          |[a;b]->(a,split_line'' b) 
-                          |_->failwith "Error:cas impossible!")
+                          | [a;b] -> (a,split_line'' b) 
+                          | _-> failwith "Error:cas impossible!")
                (List.map split_line' l4)
 
 
@@ -174,7 +174,7 @@ module Spellc = struct
   (* @Postcondition : le résultat retourné est correct.                       *)
   (* ------------------------------------------------------------------------ *)
   let word_pair_list file = let l1 = liste_words' file in
-    List.concat (List.map (fun (a,b)->List.map (fun x->(x,a)) b) l1)
+    List.concat (List.map (fun (a,b) -> List.map (fun x-> (x,a)) b) l1)
 
     
   (* --  À IMPLANTER/COMPLÉTER (7 PTS) ------ Fonction gen_matrix ----------- *)
@@ -202,12 +202,12 @@ module Spellc = struct
     let l1 = word_pair_list file in
     let list_op = List.map (fun (a,b)->(dist a b)) l1 in
       List.iter (fun liste-> let (_,l) = liste in let rec aux l = match l with
-                  |x::r->(match x with
+                  | x::r-> (match x with
                             | DEL (c1, c2) -> delm.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r
                             | INS (c1, c2) -> insm.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r
                             | SUB (c1, c2) -> subm.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r
                             | TRANS (c1, c2) -> tram.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r)
-                  | []->() in aux l) list_op;
+                  | []-> () in aux l) list_op;
     subm, delm, insm, tram
 
   let subm, delm, insm, tram = gen_matrix misspell
@@ -221,9 +221,15 @@ module Spellc = struct
   (* @Postcondition : le résultat retourné est correct.                       *)
   (*                  Si le mot est vide, retourne la liste vide.             *)
   (* ------------------------------------------------------------------------ *)
-  let c_cc_gen w =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«c_cc_gen» à compléter")
+  let c_cc_gen w = match w with
+    | "" -> []
+    | _ -> let liste_1 = ["#"]@List.map (String.make 1) (Utiles.explode w) in
+          let rec aux l acc = match l with
+            | e::r when r != [] -> aux r (acc@[e^(List.hd r)])
+            | _->acc in
+          liste_1@(aux liste_1 [])
+
+
     
 
   (* --  À IMPLANTER/COMPLÉTER (7 PTS) ------ Fonction gen_table ------------ *)

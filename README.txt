@@ -5,7 +5,7 @@ Fonctions à implementer:		Status:
 -:liste_words'				Done
 -:word_pair_list			Done
 -:gen_matrix				Done
--:c_cc_gen				not Done
+-:c_cc_gen				Done
 -:gen_table				not Done
 -:p_fault				not Done
 -:prob_xw				not Done
