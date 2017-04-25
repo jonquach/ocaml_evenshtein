@@ -117,7 +117,9 @@ module Spellc = struct
     Str.split (Str.regexp special_c) line
 
   let liste_words file =let liste = read_lines_file file in
-    List.map split_line liste
+    let (l1,l2) = List.partition (fun x->x == []) (
+    List.map split_line (List.map String.lowercase liste)) in l2
+
 
     
   (* --  À IMPLANTER/COMPLÉTER (8 PTS) ------ Fonction wwpf_frequence ------- *)
