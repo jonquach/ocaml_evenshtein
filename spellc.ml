@@ -130,13 +130,30 @@ module Spellc = struct
   (* @Precondition  : fichier existe                                          *)
   (* @Postcondition : les tables et les nombres retournés sont corrects.      *)
   (* ------------------------------------------------------------------------ *)
+  let rec remove_dups lst = match lst with
+    | [] -> []
+    | h::t -> h::(remove_dups (List.filter (fun x -> x <> h) t))
+
+  let word_freq l =
+    let hash = Hashtbl.create 250 in
+    L.iter (fun key -> if Hashtbl.mem hash key then Hashtbl.replace hash key ((Hashtbl.find hash key) + 1) else Hashtbl.add hash key 1) l;
+    hash
+
+  let add_bol lw =
+    L.map (fun x -> ["<s>"] @ x) lw
+
+  let add_eol lw =
+    L.map (fun x -> ["<s>"] @ x @ ["</s>"]) lw
+
   let wwpf_frequence file =
-    let wf = H.create 25000 in 
-    let wpf = H.create 200000 in
+    let lw = L.flatten(liste_words file) in
+    let nlw = liste_words file in
+    let wf = word_freq(L.flatten(add_bol nlw)) in 
+    let wpf = word_freq(L.flatten(add_eol nlw)) in
     let _N = ref 0 in 
     let _V = ref 0 in 
-    _N := 0;
-    _V := 0;
+    _N := L.length lw;
+    _V := L.length(remove_dups lw);
     (* Compléter par votre code *)
     (* raise (Non_Implante "«wwpf_frequence» à compléter") *)
     wf, wpf, !_V, !_N
@@ -257,7 +274,7 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   let p_fault op = 
     (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«p_fault» à compléter")
+    (* raise (Non_Implante "«p_fault» à compléter") *)
 
 
   (* --  À IMPLANTER/COMPLÉTER (4 PTS) ------ Fonction prob_xw -------------- *)
@@ -268,7 +285,7 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   let prob_xw ops =
     (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«prob_xw» à compléter")
+    (* raise (Non_Implante "«prob_xw» à compléter") *)
 
 
   (* --  À IMPLANTER/COMPLÉTER (8 PTS) ------ Fonction prob_uwv ------------- *)
