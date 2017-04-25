@@ -116,9 +116,9 @@ module Spellc = struct
   let split_line line =
     Str.split (Str.regexp special_c) line
 
-  let liste_words file =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«liste_words» à compléter")
+  let liste_words file =let liste = read_lines_file file in
+    List.map split_line liste
+
     
   (* --  À IMPLANTER/COMPLÉTER (8 PTS) ------ Fonction wwpf_frequence ------- *)
   (* @Fonction      : string -> (string, int) H.t *                           *)
