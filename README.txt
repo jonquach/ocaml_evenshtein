@@ -2,7 +2,7 @@ Fonctions à implementer:		Status:
 
 -:liste_words 				Done
 -:wwpf_frequence			not Done
--:liste_words'				not Done
+-:liste_words'				Done
 -:word_pair_list			not Done
 -:gen_matrix				not Done
 -:c_cc_gen				not Done

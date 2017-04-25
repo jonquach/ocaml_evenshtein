@@ -157,9 +157,13 @@ module Spellc = struct
   let split_line'' line =
     Str.split (Str.regexp ", ") line
 
-  let liste_words' file =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«liste_words'» à compléter")
+  let liste_words' file = let l1 = read_lines_file file in
+   let (l2,l3) = List.partition (fun x-> (String.length x) == 0) l1 in
+   let l4 = List.map String.lowercase l3 in
+      List.map (fun l-> match l with
+                          |[a;b]->(a,split_line'' b) 
+                          |_->failwith "Error:cas impossible!")
+               (List.map split_line' l4)
 
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction word_pair_list ------- *)
