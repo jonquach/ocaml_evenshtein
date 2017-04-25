@@ -4,7 +4,7 @@ Fonctions à implementer:		Status:
 -:wwpf_frequence			not Done
 -:liste_words'				Done
 -:word_pair_list			Done
--:gen_matrix				not Done
+-:gen_matrix				Done
 -:c_cc_gen				not Done
 -:gen_table				not Done
 -:p_fault				not Done
