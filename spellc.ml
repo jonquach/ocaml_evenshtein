@@ -173,9 +173,8 @@ module Spellc = struct
   (* @Precondition  : fichier existe                                          *)
   (* @Postcondition : le résultat retourné est correct.                       *)
   (* ------------------------------------------------------------------------ *)
-  let word_pair_list file =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«word_pair_list» à compléter")
+  let word_pair_list file = let l1 = liste_words' file in
+    List.concat (List.map (fun (a,b)->List.map (fun x->(x,a)) b) l1)
 
     
   (* --  À IMPLANTER/COMPLÉTER (7 PTS) ------ Fonction gen_matrix ----------- *)
