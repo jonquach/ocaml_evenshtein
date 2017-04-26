@@ -7,7 +7,7 @@
 (* -------------------------------------------------------------------------- *)
 (* -- PRINCIPALE FICHIER DU TP ---------------------- ----------------------- *)
 (* -------------------------------------------------------------------------- *)
-  
+
 #load "unix.cma";;
 #load "str.cma";;
 
@@ -34,10 +34,10 @@ module Spellc = struct
 
   (* on accepte [a-zA-Z]+ et l'apostrophe                                     *)
   let special_c = "[\000-\038\040-\064\091-\096\123-\255]+"
-    
+
   let corpus = "corpus.txt"
   let misspell = "misspell.txt"
-  
+
   type operation =
     | SUB of char * char    (* char source par char cible             *)
     | DEL of char * char    (* char source et celui qui le précède    *)
@@ -47,7 +47,7 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   (* @Fonction      : string -> string -> int * operation list                *)
   (* @Description   : version modifiée de Wiki:                               *)
-  (*            https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein *) 
+  (*            https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein *)
   (* @Precondition  : aucune                                                  *)
   (* @Postcondition : entier retourné positif ou nul                          *)
   (* ------------------------------------------------------------------------ *)
@@ -55,7 +55,7 @@ module Spellc = struct
     let m = String.length s
     and n = String.length t in
     let d = Array.make_matrix (m+1) (n+1) 0
-    and bt = Array.make_matrix (m+1) (n+1) None in 
+    and bt = Array.make_matrix (m+1) (n+1) None in
     let rec f mat i j acc =
       if i <0 || j < 0 then acc else
       match (mat.(i).(j)) with
@@ -68,9 +68,9 @@ module Spellc = struct
     in
     for i = 1 to m do
       d.(i).(0) <- i ;
-      bt.(i).(0) <- 
-        if i == 1 
-        then Some (DEL(s.[i-1], '#')) 
+      bt.(i).(0) <-
+        if i == 1
+        then Some (DEL(s.[i-1], '#'))
         else Some (DEL(s.[i-1], s.[i-2]))
     done;
     for j = 1 to n do
@@ -82,21 +82,21 @@ module Spellc = struct
         if s.[i-1] = t.[j-1] then
           d.(i).(j) <- d.(i-1).(j-1)  (* no operation required *)
         else
-          let del, ins, sub = ((d.(i-1).(j) + 1), 
+          let del, ins, sub = ((d.(i-1).(j) + 1),
             (d.(i).(j-1) + 1), (d.(i-1).(j-1) + 1)) in
           if del <= ins && del <= sub then
-            (d.(i).(j) <- del; bt.(i).(j) <- 
-              if i == 1 
-              then Some (DEL(s.[i-1], '#')) 
+            (d.(i).(j) <- del; bt.(i).(j) <-
+              if i == 1
+              then Some (DEL(s.[i-1], '#'))
             else Some (DEL(s.[i-1], s.[i-2])))
-          else 
+          else
             if ins <= del && ins <= sub then
               (d.(i).(j) <- ins; bt.(i).(j) <- Some (INS (t.[j-1], s.[i-1])))
-            else 
+            else
               if sub <= ins && sub <= del then
                 (d.(i).(j) <-sub; bt.(i).(j) <- Some (SUB (s.[i-1], t.[j-1])))
           ;
-          if ((i > 1) && (j > 1) && (s.[i-1] = t.[j-2]) && (s.[i-2] = t.[j-1])) 
+          if ((i > 1) && (j > 1) && (s.[i-1] = t.[j-2]) && (s.[i-2] = t.[j-1]))
           then
             let trans = (d.(i-2).(j-2)+1) in
             if trans < d.(i).(j) then
@@ -109,7 +109,7 @@ module Spellc = struct
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction liste_words ---------- *)
   (* @Fonction      : string -> string list list                              *)
   (* @Description   : retourne une liste de listes de mots d'un fichier donné;*)
-  (*                  chacune de ces listes correspond à une ligne du fichier.*) 
+  (*                  chacune de ces listes correspond à une ligne du fichier.*)
   (* @Precondition  : fichier existe                                          *)
   (* @Postcondition : ordre des lignes traitées du fichier n'importe pas.     *)
   (* ------------------------------------------------------------------------ *)
@@ -121,11 +121,11 @@ module Spellc = struct
     List.map split_line (List.map String.lowercase liste)) in l2
 
 
-    
+
   (* --  À IMPLANTER/COMPLÉTER (8 PTS) ------ Fonction wwpf_frequence ------- *)
   (* @Fonction      : string -> (string, int) H.t *                           *)
   (*                            (string * string, int) H.t * int * int        *)
-  (* @Description   : retourne la fréquence de mots et de paires de mots,     *) 
+  (* @Description   : retourne la fréquence de mots et de paires de mots,     *)
   (*                  ainsi que le nombre total de mots et de mots différents.*)
   (* @Precondition  : fichier existe                                          *)
   (* @Postcondition : les tables et les nombres retournés sont corrects.      *)
@@ -145,20 +145,19 @@ module Spellc = struct
   let add_eol lw =
     L.map (fun x -> ["<s>"] @ x @ ["</s>"]) lw
 
-  let helper_fun llw = let rec aux_liste l acc = match l with
+  let plw_freq llw = let rec aux_liste l acc = match l with
     | x::r when r != [] -> aux_liste r (acc@[(x,List.hd r)])
-    | _-> acc in 
-    let reponse = List.map (fun l -> aux_liste l []) llw in 
+    | _-> acc in
+    let reponse = List.map (fun l -> aux_liste l []) llw in
     List.flatten reponse
-
 
   let wwpf_frequence file =
     let lw = L.flatten(liste_words file) in
     let nlw = liste_words file in
-    let wf = word_freq(L.flatten(add_bol nlw)) in 
-    let wpf = word_freq(L.flatten(add_eol nlw)) in
-    let _N = ref 0 in 
-    let _V = ref 0 in 
+    let wf = word_freq(L.flatten(add_bol nlw)) in
+    let wpf = word_freq(plw_freq(add_eol nlw)) in
+    let _N = ref 0 in
+    let _V = ref 0 in
     _N := L.length lw;
     _V := L.length(remove_dups lw);
     (* Compléter par votre code *)
@@ -166,7 +165,7 @@ module Spellc = struct
     wf, wpf, !_V, !_N
 
   let wf, wpf, _V, _N = wwpf_frequence corpus
-  
+
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction liste_words' --------- *)
   (* @Fonction      : string -> (string * string list) list                   *)
@@ -185,7 +184,7 @@ module Spellc = struct
    let (l2,l3) = List.partition (fun x-> (String.length x) == 0) l1 in
    let l4 = List.map String.lowercase l3 in
       List.map (fun l-> match l with
-                          | [a;b] -> (a,split_line'' b) 
+                          | [a;b] -> (a,split_line'' b)
                           | _-> failwith "Error:cas impossible!")
                (List.map split_line' l4)
 
@@ -200,7 +199,7 @@ module Spellc = struct
   let word_pair_list file = let l1 = liste_words' file in
     List.concat (List.map (fun (a,b) -> List.map (fun x-> (x,a)) b) l1)
 
-    
+
   (* --  À IMPLANTER/COMPLÉTER (7 PTS) ------ Fonction gen_matrix ----------- *)
   (* @Fonction      : string -> int array array * int array array *           *)
   (*                            int array array * int array array             *)
@@ -217,7 +216,7 @@ module Spellc = struct
   | '-' -> 2
   | '\'' -> 3
   | _ -> (Char.code c) - 97 + n_en_plus
-    
+
   let gen_matrix file =
     let subm = Array.make_matrix (n_total) (n_total) 0 in
     let delm = Array.make_matrix (n_total) (n_total) 0 in
@@ -254,7 +253,7 @@ module Spellc = struct
           liste_1@(aux liste_1 [])
 
 
-    
+
 
   (* --  À IMPLANTER/COMPLÉTER (7 PTS) ------ Fonction gen_table ------------ *)
   (* @Fonction      : string -> (string, int) H.t                             *)
@@ -264,7 +263,7 @@ module Spellc = struct
   (* @Postcondition : le résultat retourné est correct.                       *)
   (* ------------------------------------------------------------------------ *)
   let gen_table file =
-    let cpcf = H.create 1000 in 
+    let cpcf = H.create 1000 in
     (* Compléter par votre code *)
     (* raise (Non_Implante "«gen_table» à compléter") *)
     cpcf
@@ -279,7 +278,7 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : le résultat retourné est compris entre 0. et 1.         *)
   (* ------------------------------------------------------------------------ *)
-  let p_fault op = 
+  let p_fault op =
     (* Remplacer la ligne suivante par votre code *)
     (* raise (Non_Implante "«p_fault» à compléter") *)
 
@@ -301,7 +300,7 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : le résultat retourné est compris entre 0. et 1.         *)
   (* ------------------------------------------------------------------------ *)
- let prob_uwv ?(u = "") ?(v = "") w = 
+ let prob_uwv ?(u = "") ?(v = "") w =
     (* Remplacer la ligne suivante par votre code *)
     raise (Non_Implante "«prob_uwv» à compléter")
 
@@ -358,7 +357,7 @@ module Spellc = struct
   (* --  À IMPLANTER/COMPLÉTER (10 PTS) ------ Fonction revise_lwords ------- *)
   (* @Fonction      : ?k:int -> string list -> string list                    *)
   (* @Description   : principale fonction de correction automatique d'une     *)
-  (*                  liste de mots, formant une phrase, avec prise en compte *) 
+  (*                  liste de mots, formant une phrase, avec prise en compte *)
   (*                  du contexte.                                            *)
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : les mots retournés sont dans le dictionnaire.           *)
@@ -376,21 +375,21 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   let split_input_line line =
     let l = Str.full_split (Str.regexp special_c) line in
-    let lwords = 
-      L.fold_left 
+    let lwords =
+      L.fold_left
         (fun acc s -> match s with Str.Delim d -> acc | Str.Text t -> (t::acc))
         [] l in
     l, L.rev lwords
-  
-  let desplit_line lsep lwords = 
+
+  let desplit_line lsep lwords =
     let rec aux lsep lwords acc = match lsep, lwords with
       | [],[] -> acc
-      | [],[s] -> acc ^ s 
+      | [],[s] -> acc ^ s
       | [Str.Delim s],[] -> acc ^ s
-      | x::r, x'::r' -> 
+      | x::r, x'::r' ->
         begin
           match x with
-            | Str.Delim s -> aux r lwords (acc ^ s) 
+            | Str.Delim s -> aux r lwords (acc ^ s)
             | Str.Text _ -> aux r r' (acc ^ x')
         end
       | _ -> failwith "deslit_line impossible!"
@@ -402,7 +401,7 @@ module Spellc = struct
     let case_list = L.map case lwords in
     let lwords' = revise_lwords ~k:k lwords in
     let lwords'' = L.map2 (fun c w -> to_case c w) case_list lwords' in
-    desplit_line lsplit lwords'' 
+    desplit_line lsplit lwords''
 
 
   (* --  À IMPLANTER/COMPLÉTER (10 PTS) ------ Fonction find_cand_aux ------- *)
@@ -431,10 +430,10 @@ module Spellc = struct
   let find_cand ?(k = 2) ?(u = bol) pref =
     let m = S.length pref in
     let u = if u = "" then bol else S.lowercase u in
-    let case_t = if u = bol && m = 0 then Is_upper else case pref in 
+    let case_t = if u = bol && m = 0 then Is_upper else case pref in
     let pref = S.lowercase pref in
 	  let candidates = find_cand_aux ~k:2 ~u:u pref in
-    L.map (fun (w,_) -> if w = eol then "." else to_case case_t w) 
+    L.map (fun (w,_) -> if w = eol then "." else to_case case_t w)
     	  candidates
 
 end
