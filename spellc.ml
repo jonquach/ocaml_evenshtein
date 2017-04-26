@@ -145,6 +145,13 @@ module Spellc = struct
   let add_eol lw =
     L.map (fun x -> ["<s>"] @ x @ ["</s>"]) lw
 
+  let helper_fun llw = let rec aux_liste l acc = match l with
+    | x::r when r != [] -> aux_liste r (acc@[(x,List.hd r)])
+    | _-> acc in 
+    let reponse = List.map (fun l -> aux_liste l []) llw in 
+    List.flatten reponse
+
+
   let wwpf_frequence file =
     let lw = L.flatten(liste_words file) in
     let nlw = liste_words file in
