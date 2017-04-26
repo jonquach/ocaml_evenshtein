@@ -280,7 +280,7 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   let p_fault op =
     (* Remplacer la ligne suivante par votre code *)
-    (* raise (Non_Implante "«p_fault» à compléter") *)
+    raise (Non_Implante "«p_fault» à compléter")
 
 
   (* --  À IMPLANTER/COMPLÉTER (4 PTS) ------ Fonction prob_xw -------------- *)
@@ -291,7 +291,7 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   let prob_xw ops =
     (* Remplacer la ligne suivante par votre code *)
-    (* raise (Non_Implante "«prob_xw» à compléter") *)
+    raise (Non_Implante "«prob_xw» à compléter")
 
 
   (* --  À IMPLANTER/COMPLÉTER (8 PTS) ------ Fonction prob_uwv ------------- *)
