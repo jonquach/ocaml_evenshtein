@@ -12,7 +12,7 @@ Fonctions à implementer:		Status:
 -:prob-uvw				Done mais pas testée encore!!!
 -:find_candidates			not Done
 -:best_candidates			not Done
--:tri_gramme				not Done
+-:tri_gramme				Done
 -:revise_lwords				not Done
 -:findcand_aux				not Done
 

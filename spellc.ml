@@ -347,9 +347,16 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : les mots dans la liste résultant proviennent de lwords. *)
   (* ------------------------------------------------------------------------ *)
-  let tri_gramme lwords =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«tri_gramme» à compléter")
+  let tri_gramme lwords = match lwords with 
+    | []->[]
+    | [x]->[("<s>",x,"</s>")]
+    | x::r-> let rec aux l acc = match l with
+              | e1::e2::e3::r -> aux (e2::e3::r) (acc@[(e1,e2,e3)])
+              | [x;y] -> acc@[(x,y,"</s>")] 
+              | _ -> [] in
+    aux (x::r) [("<s>",x,List.hd r)]
+
+
 
 
   (* --  À IMPLANTER/COMPLÉTER (10 PTS) ------ Fonction revise_lwords ------- *)
