@@ -160,8 +160,6 @@ module Spellc = struct
     let _V = ref 0 in
     _N := L.length lw;
     _V := L.length(remove_dups lw);
-    (* Compléter par votre code *)
-    (* raise (Non_Implante "«wwpf_frequence» à compléter") *)
     wf, wpf, !_V, !_N
 
   let wf, wpf, _V, _N = wwpf_frequence corpus
@@ -262,10 +260,25 @@ module Spellc = struct
   (* @Precondition  : fichier existe.                                         *)
   (* @Postcondition : le résultat retourné est correct.                       *)
   (* ------------------------------------------------------------------------ *)
+
+  let compte_redondance l = 
+    let liste_triee = List.sort compare l in
+    match liste_triee with
+      | [] -> []
+      | e::r -> 
+        let acc,x,c = List.fold_left (fun (acc,x,c) y -> if y = x 
+                                        then acc,x,c+1 
+                                        else (x,c)::acc, y,1) ([],e,1) r in
+        (x,c)::acc
+
+
   let gen_table file =
     let cpcf = H.create 1000 in
-    (* Compléter par votre code *)
-    (* raise (Non_Implante "«gen_table» à compléter") *)
+    let paires = word_pair_list file in
+    let paires' = List.map fst paires in
+    let char_liste = List.flatten (List.map c_cc_gen paires') in
+    let frequence_liste = compte_redondance char_liste in 
+    List.iter (fun (key,value) -> H.add cpcf key value ) frequence_liste;
     cpcf
 
   let cpcf = gen_table misspell
@@ -278,10 +291,12 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : le résultat retourné est compris entre 0. et 1.         *)
   (* ------------------------------------------------------------------------ *)
-  let p_fault op =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«p_fault» à compléter")
-
+  let p_fault op = match op with
+    | DEL(x,y) -> (float_of_int(delm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((H.find cpcf ((String.make 1 y)^(String.make 1 x)))+_K))
+    | INS(x,y) -> (float_of_int(insm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((H.find cpcf (String.make 1 y))+_K))
+    | SUB(x,y) -> (float_of_int(subm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((H.find cpcf (String.make 1 x))+_K))
+    | TRANS(x,y) -> (float_of_int(tram.(i_fromChar x).(i_fromChar y)+1)) /. (float_of_int((H.find cpcf ((String.make 1 x)^(String.make 1 y)))+_K))
+ 
 
   (* --  À IMPLANTER/COMPLÉTER (4 PTS) ------ Fonction prob_xw -------------- *)
   (* @Fonction      : operation list -> float                                 *)
