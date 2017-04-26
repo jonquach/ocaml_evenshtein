@@ -9,7 +9,7 @@ Fonctions à implementer:		Status:
 -:gen_table				not Done
 -:p_fault				not Done
 -:prob_xw				not Done
--:prob-uvw				not Done
+-:prob-uvw				Done mais pas testée encore!!!
 -:find_candidates			not Done
 -:best_candidates			not Done
 -:tri_gramme				not Done

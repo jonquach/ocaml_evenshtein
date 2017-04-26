@@ -289,9 +289,7 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : le résultat retourné est compris entre 0. et 1.         *)
   (* ------------------------------------------------------------------------ *)
-  let prob_xw ops =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«prob_xw» à compléter")
+  let prob_xw ops = List.fold_left (fun x y -> x *. y) 1. (List.map p_fault ops)
 
 
   (* --  À IMPLANTER/COMPLÉTER (8 PTS) ------ Fonction prob_uwv ------------- *)
