@@ -226,10 +226,10 @@ module Spellc = struct
     let list_op = List.map (fun (a,b)->(dist a b)) l1 in
       List.iter (fun liste-> let (_,l) = liste in let rec aux l = match l with
                   | x::r-> (match x with
-                            | DEL (c1, c2) -> delm.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r
-                            | INS (c1, c2) -> insm.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r
-                            | SUB (c1, c2) -> subm.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r
-                            | TRANS (c1, c2) -> tram.(i_fromChar c1).(i_fromChar c2)<-(delm.(i_fromChar c1).(i_fromChar c2)+1);aux r)
+                            | DEL (c1, c2) -> delm.(i_fromChar c2).(i_fromChar c1)<-(delm.(i_fromChar c2).(i_fromChar c1)+1);aux r
+                            | INS (c1, c2) -> insm.(i_fromChar c2).(i_fromChar c1)<-(insm.(i_fromChar c2).(i_fromChar c1)+1);aux r
+                            | SUB (c1, c2) -> subm.(i_fromChar c2).(i_fromChar c1)<-(subm.(i_fromChar c2).(i_fromChar c1)+1);aux r
+                            | TRANS (c1, c2) -> tram.(i_fromChar c1).(i_fromChar c2)<-(tram.(i_fromChar c1).(i_fromChar c2)+1);aux r)
                   | []-> () in aux l) list_op;
     subm, delm, insm, tram
 
