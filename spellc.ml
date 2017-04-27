@@ -291,11 +291,15 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : le résultat retourné est compris entre 0. et 1.         *)
   (* ------------------------------------------------------------------------ *)
+  let safe_ihfind p l =
+    try H.find p l
+    with Not_found -> 0
+
   let p_fault op = match op with
-    | DEL(x,y) -> (float_of_int(delm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((H.find cpcf ((String.make 1 y)^(String.make 1 x)))+_K))
-    | INS(x,y) -> (float_of_int(insm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((H.find cpcf (String.make 1 y))+_K))
-    | SUB(x,y) -> (float_of_int(subm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((H.find cpcf (String.make 1 x))+_K))
-    | TRANS(x,y) -> (float_of_int(tram.(i_fromChar x).(i_fromChar y)+1)) /. (float_of_int((H.find cpcf ((String.make 1 x)^(String.make 1 y)))+_K))
+    | DEL(x,y) -> (float_of_int(delm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((safe_ihfind cpcf ((String.make 1 y)^(String.make 1 x)))+_K))
+    | INS(x,y) -> (float_of_int(insm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((safe_ihfind cpcf (String.make 1 y))+_K))
+    | SUB(x,y) -> (float_of_int(subm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((safe_ihfind cpcf (String.make 1 x))+_K))
+    | TRANS(x,y) -> (float_of_int(tram.(i_fromChar x).(i_fromChar y)+1)) /. (float_of_int((safe_ihfind cpcf ((String.make 1 x)^(String.make 1 y)))+_K))
  
 
   (* --  À IMPLANTER/COMPLÉTER (4 PTS) ------ Fonction prob_xw -------------- *)
@@ -313,12 +317,16 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : le résultat retourné est compris entre 0. et 1.         *)
   (* ------------------------------------------------------------------------ *)
- let prob_uwv ?(u = "") ?(v = "") w =
+  let safe_hfind p l =
+    try float_of_int(H.find p l)
+    with Not_found -> 0.
+
+  let prob_uwv ?(u = "") ?(v = "") w =
     match u,v,w with
-    | (u,w,v) when u = "" && v = "" -> (float_of_int(H.find wf w) +. 1.) /. (float_of_int(_N +_V)) 
-    | (u,w,v) when v = "" -> float_of_int(H.find wpf (u,w) + 1) /. (float_of_int(H.find wf u) +. float_of_int(_V))
-    | (u,w,v) when u = "" -> (float_of_int(H.find wf w + 1) /. float_of_int(_N +_V)) *. (float_of_int(H.find wpf (w,v) + 1) /. ((float_of_int(H.find wf w) +. float_of_int(_V))))
-    | (u,w,v) -> (float_of_int(H.find wpf (u,w) + 1) /. (float_of_int(H.find wf u) +. float_of_int(_V))) *. (float_of_int(H.find wpf (w,v) + 1) /. ((float_of_int(H.find wf w) +. float_of_int(_V))))
+    | ("","",w) -> (safe_hfind wf w +. 1.) /. (float_of_int(_N +_V))
+    | ("",v,w) -> ((safe_hfind wf w +. 1.) /. (float_of_int(_N +_V))) *. ((safe_hfind wpf (w,v) +. 1.) /. (safe_hfind wf w +. float_of_int(_V)))
+    | (u,"",w) -> (safe_hfind wpf (u,w) +. 1.) /. (safe_hfind wf u +. float_of_int(_V))
+    | (u,v,w) -> (safe_hfind wpf (u,w) +. 1.) /. (safe_hfind wf u +. float_of_int(_V)) *. (safe_hfind wpf (w,v) +. 1.) /. (safe_hfind wf w +. float_of_int(_V))
 
 
   (* ------------------------------------------------------------------------ *)
@@ -349,9 +357,6 @@ module Spellc = struct
         let reponse = List.map (fun s -> (s,snd (dist s x))) l1 in reponse
 
 
-
-
-
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction best_candidate  ------ *)
   (* @Fonction      : ?u:string -> ?v:string -> string ->                     *)
   (*                  (string * operation list) list -> string                *)
@@ -363,8 +368,7 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   let best_candidate ?(u = "") ?(v = "") x cand = match cand with
     | [] -> x
-    | _ -> let mots_prob = List.map (fun (s,ops) -> 
-                                    (s,prob_xw_uwv ~u:u ~v:v x ops)) cand in
+    | _ -> let mots_prob = List.map (fun (s,ops) -> (s, prob_xw_uwv ~u:u ~v:v x ops)) cand in
              let prob_mots = List.map (fun (a,b) -> (b,a)) mots_prob in
                let rec aux l = match l with
                 | [] -> failwith "erreur in best_candidate liste vide "
