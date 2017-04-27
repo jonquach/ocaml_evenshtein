@@ -315,7 +315,11 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
  let prob_uwv ?(u = "") ?(v = "") w =
     (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«prob_uwv» à compléter")
+    match u,v,w with
+    | (u,w,v) when u = "" && v = "" -> (float_of_int(H.find wf w) +. 1.) /. (float_of_int(_N +_V)) 
+    | (u,w,v) when v = "" -> float_of_int(H.find wpf (u,w) + 1) /. (float_of_int(H.find wf u) +. float_of_int(_V))
+    | (u,w,v) when u = "" -> (float_of_int(H.find wf w + 1) /. float_of_int(_N +_V)) *. (float_of_int(H.find wpf (w,v) + 1) /. ((float_of_int(H.find wf w) +. float_of_int(_V))))
+    | (u,w,v) -> (float_of_int(H.find wpf (u,w) + 1) /. (float_of_int(H.find wf u) +. float_of_int(_V))) *. (float_of_int(H.find wpf (w,v) + 1) /. ((float_of_int(H.find wf w) +. float_of_int(_V))))
 
 
   (* ------------------------------------------------------------------------ *)
