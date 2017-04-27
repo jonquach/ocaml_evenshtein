@@ -326,7 +326,7 @@ module Spellc = struct
     | ("","",w) -> (safe_hfind wf w +. 1.) /. (float_of_int(_N +_V))
     | ("",v,w) -> ((safe_hfind wf w +. 1.) /. (float_of_int(_N +_V))) *. ((safe_hfind wpf (w,v) +. 1.) /. (safe_hfind wf w +. float_of_int(_V)))
     | (u,"",w) -> (safe_hfind wpf (u,w) +. 1.) /. (safe_hfind wf u +. float_of_int(_V))
-    | (u,v,w) -> (safe_hfind wpf (u,w) +. 1.) /. (safe_hfind wf u +. float_of_int(_V)) *. (safe_hfind wpf (w,v) +. 1.) /. (safe_hfind wf w +. float_of_int(_V))
+    | (u,v,w) -> ((safe_hfind wpf (u,w) +. 1.) /. (safe_hfind wf u +. float_of_int(_V))) *. ((safe_hfind wpf (w,v) +. 1.) /. (safe_hfind wf w +. float_of_int(_V)))
 
 
   (* ------------------------------------------------------------------------ *)
