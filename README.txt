@@ -9,9 +9,9 @@ Fonctions à implementer:		Status:
 -:gen_table				Done
 -:p_fault				Done
 -:prob_xw				Done
--:prob-uvw				not Done
--:find_candidates			not Done
--:best_candidates			not Done
+-:prob-uvw				Done
+-:find_candidates			Done
+-:best_candidates			Done
 -:tri_gramme				Done
 -:revise_lwords				not Done
 -:findcand_aux				not Done

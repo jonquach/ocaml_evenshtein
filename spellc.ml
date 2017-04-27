@@ -314,7 +314,6 @@ module Spellc = struct
   (* @Postcondition : le résultat retourné est compris entre 0. et 1.         *)
   (* ------------------------------------------------------------------------ *)
  let prob_uwv ?(u = "") ?(v = "") w =
-    (* Remplacer la ligne suivante par votre code *)
     match u,v,w with
     | (u,w,v) when u = "" && v = "" -> (float_of_int(H.find wf w) +. 1.) /. (float_of_int(_N +_V)) 
     | (u,w,v) when v = "" -> float_of_int(H.find wpf (u,w) + 1) /. (float_of_int(H.find wf u) +. float_of_int(_V))
@@ -340,9 +339,17 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : les mots retournés appartiennent à la table wf.         *)
   (* ------------------------------------------------------------------------ *)
-  let find_candidates ?(k = 2) x =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«find_candidates» à compléter")
+  let find_candidates ?(k = 2) x = 
+    let l = H.fold (fun x' y z -> x'::z) wf [] in
+      let (l1,_) = List.partition 
+            (fun e -> (String.length e) <= (2 + String.length x) 
+            && (String.length e) >= (-2+String.length x)
+            && (fun (i,l') -> i <= 2) (dist x e) ) 
+            l in
+        let reponse = List.map (fun s -> (s,snd (dist s x))) l1 in reponse
+
+
+
 
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction best_candidate  ------ *)
@@ -354,9 +361,16 @@ module Spellc = struct
   (* @Postcondition : le mot retourné fait partie des candidats.              *)
   (*                  Si la liste cand est vide, retourne x.                  *)
   (* ------------------------------------------------------------------------ *)
-  let best_candidate ?(u = "") ?(v = "") x cand =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«best_candidate» à compléter")
+  let best_candidate ?(u = "") ?(v = "") x cand = match cand with
+    | [] -> x
+    | _ -> let mots_prob = List.map (fun (s,ops) -> 
+                                    (s,prob_xw_uwv ~u:u ~v:v x ops)) cand in
+      let prob_mots = List.map (fun (a,b) -> (b,a)) mots_prob in
+        let rec aux l = match l with
+         | [] -> failwith "erreur in best_candidate liste vide "
+         | [x] -> x
+         | e::r -> max e (aux r) in
+        snd (aux prob_mots)
 
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction tri_gramme ----------- *)
