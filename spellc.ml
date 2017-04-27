@@ -394,8 +394,6 @@ module Spellc = struct
     aux (x::r) [("<s>",x,List.hd r)]
 
 
-
-
   (* --  À IMPLANTER/COMPLÉTER (10 PTS) ------ Fonction revise_lwords ------- *)
   (* @Fonction      : ?k:int -> string list -> string list                    *)
   (* @Description   : principale fonction de correction automatique d'une     *)
@@ -405,9 +403,8 @@ module Spellc = struct
   (* @Postcondition : les mots retournés sont dans le dictionnaire.           *)
   (* ------------------------------------------------------------------------ *)
   let revise_lwords ?(k = 2) lwords =
-    (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«revise_lwords» à compléter")
-
+    let tri = tri_gramme lwords in
+    L.map (fun (x,y,z) -> best_candidate ~u:x y ~v:z (find_candidates y)) tri;;
 
   (* -- revise_line --------------------------------------------------------- *)
   (* @Fonction      : ?k:int -> string -> string                              *)
@@ -459,7 +456,7 @@ module Spellc = struct
 
   let find_cand_aux ?(k = 2) ?(u = bol) pref =
     (* Remplacer la ligne suivante par votre code *)
-    raise (Non_Implante "«find_cand_aux» à compléter")
+    (* raise (Non_Implante "«find_cand_aux» à compléter") *)
 
   (* ------------------------------------------------------------------------ *)
   (* @Fonction      : ?k:int -> ?u:string -> string -> string list            *)

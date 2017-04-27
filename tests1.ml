@@ -206,7 +206,7 @@ let t_tri_gramme = List.map tri_gramme
              ("m2", "m3", "</s>")]];;
 
 (* Test de la fonction revise_lwords *)
-(* let t_revise_lwords = List.map (revise_lwords % split_line) 
+let t_revise_lwords = List.map (revise_lwords % split_line) 
                  ["i hve a dream";"i hpe to be";
                 "i hpe to understand the meaning";
                 "to reaize my fuure"] =
@@ -240,14 +240,14 @@ let t152 = List.map (fun (u,c) -> find_cand_aux ~u:u c)
        [("dream", 0.0015432098765432098); 
         ("dreams", 1.1182680264805868e-005)]];;
 let t_find_cand_aux = t151 && t152;;
- *)
+
 (* RÉSULTATS                                                                  *) 
 (******************************************************************************) 
 let test_all = 
   t_liste_words && t_wwpf_frequence && t_liste_words' && t_word_pair_list && 
   t_gen_matrix && t_c_cc_gen && t_gen_table && t_p_fault && t_prob_xw && 
-  t_prob_uwv && t_find_candidates && t_best_candidate && t_tri_gramme;; (* && 
-  t_revise_lwords && t_find_cand_aux;; *)
+  t_prob_uwv && t_find_candidates && t_best_candidate && t_tri_gramme && 
+  t_revise_lwords && t_find_cand_aux;;
 
 Printf.printf "\nResults\n";
 Printf.printf "-------\n";
@@ -264,8 +264,8 @@ Printf.printf "\tprob_uwv : %b\n" t_prob_uwv;
 Printf.printf "\tfind_candidates : %b\n" t_find_candidates;
 Printf.printf "\tbest_candidate : %b\n" t_best_candidate;
 Printf.printf "\ttri_gramme : %b\n" t_tri_gramme;
-(* Printf.printf "\trevise_lwords : %b\n" t_revise_lwords;
-Printf.printf "\tfind_cand_aux : %b\n\n" t_find_cand_aux; *)
+Printf.printf "\trevise_lwords : %b\n" t_revise_lwords;
+Printf.printf "\tfind_cand_aux : %b\n\n" t_find_cand_aux;
 Printf.printf "\tTOUT EST OK : %b\n\n" test_all;;
 
 (* FIN TESTS                                                                  *) 
