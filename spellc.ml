@@ -365,12 +365,12 @@ module Spellc = struct
     | [] -> x
     | _ -> let mots_prob = List.map (fun (s,ops) -> 
                                     (s,prob_xw_uwv ~u:u ~v:v x ops)) cand in
-      let prob_mots = List.map (fun (a,b) -> (b,a)) mots_prob in
-        let rec aux l = match l with
-         | [] -> failwith "erreur in best_candidate liste vide "
-         | [x] -> x
-         | e::r -> max e (aux r) in
-        snd (aux prob_mots)
+             let prob_mots = List.map (fun (a,b) -> (b,a)) mots_prob in
+               let rec aux l = match l with
+                | [] -> failwith "erreur in best_candidate liste vide "
+                | [x] -> x
+                | e::r -> max e (aux r) in
+               snd (aux prob_mots)
 
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction tri_gramme ----------- *)
