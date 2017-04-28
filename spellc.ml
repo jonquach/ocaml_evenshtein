@@ -148,8 +148,8 @@ module Spellc = struct
   let plw_freq llw = let rec aux_liste l acc = match l with
     | x::r when r != [] -> aux_liste r (acc@[(x,List.hd r)])
     | _-> acc in
-    let reponse = List.map (fun l -> aux_liste l []) llw in
-    List.flatten reponse
+      let reponse = List.map (fun l -> aux_liste l []) llw in
+      List.flatten reponse
 
   let wwpf_frequence file =
     let lw = L.flatten(liste_words file) in
@@ -178,13 +178,14 @@ module Spellc = struct
   let split_line'' line =
     Str.split (Str.regexp ", ") line
 
-  let liste_words' file = let l1 = read_lines_file file in
-   let (l2,l3) = List.partition (fun x-> (String.length x) == 0) l1 in
-   let l4 = List.map String.lowercase l3 in
-      List.map (fun l-> match l with
-                          | [a;b] -> (a,split_line'' b)
-                          | _-> failwith "Error:cas impossible!")
-               (List.map split_line' l4)
+  let liste_words' file =
+    let l1 = read_lines_file file in
+    let (l2,l3) = L.partition (fun x-> (S.length x) == 0) l1 in
+    let l4 = L.map String.lowercase l3 in
+      L.map (fun l -> match l with
+                        | [a;b] -> (a,split_line'' b)
+                        | _-> failwith "Error: cas impossible!")
+            (L.map split_line' l4)
 
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction word_pair_list ------- *)
@@ -194,7 +195,8 @@ module Spellc = struct
   (* @Precondition  : fichier existe                                          *)
   (* @Postcondition : le résultat retourné est correct.                       *)
   (* ------------------------------------------------------------------------ *)
-  let word_pair_list file = let l1 = liste_words' file in
+  let word_pair_list file =
+    let l1 = liste_words' file in
     List.concat (List.map (fun (a,b) -> List.map (fun x-> (x,a)) b) l1)
 
 
@@ -209,11 +211,11 @@ module Spellc = struct
   let n_total = 26 + n_en_plus
 
   let i_fromChar c = match c with
-  | '#' -> 0
-  | ' ' -> 1
-  | '-' -> 2
-  | '\'' -> 3
-  | _ -> (Char.code c) - 97 + n_en_plus
+    | '#' -> 0
+    | ' ' -> 1
+    | '-' -> 2
+    | '\'' -> 3
+    | _ -> (Char.code c) - 97 + n_en_plus
 
   let gen_matrix file =
     let subm = Array.make_matrix (n_total) (n_total) 0 in
@@ -232,7 +234,6 @@ module Spellc = struct
     subm, delm, insm, tram
 
   let subm, delm, insm, tram = gen_matrix misspell
-
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction c_cc_gen ------------- *)
   (* @Fonction      : string -> string list                                   *)
@@ -269,8 +270,7 @@ module Spellc = struct
         let acc,x,c = List.fold_left (fun (acc,x,c) y -> if y = x
                                         then acc,x,c+1
                                         else (x,c)::acc, y,1) ([],e,1) r in
-        (x,c)::acc
-
+                                        (x,c)::acc
 
   let gen_table file =
     let cpcf = H.create 1000 in
@@ -374,7 +374,7 @@ module Spellc = struct
                 | [] -> failwith "erreur in best_candidate liste vide"
                 | [x] -> x
                 | e::r -> max e (aux r) in
-               snd (aux prob_mots)
+                  snd (aux prob_mots)
 
 
   (* --  À IMPLANTER/COMPLÉTER (5 PTS) ------ Fonction tri_gramme ----------- *)
