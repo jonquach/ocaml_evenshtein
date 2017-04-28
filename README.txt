@@ -11,9 +11,9 @@ Fonctions à implementer:		Status:
 -:prob_xw				Done
 -:prob-uvw				Done
 -:find_candidates			Done
--:best_candidates			Done
+-:best_candidates			Done but false in test
 -:tri_gramme				Done
--:revise_lwords				not Done
--:findcand_aux				not Done
+-:revise_lwords				Done
+-:findcand_aux				Done
 
 

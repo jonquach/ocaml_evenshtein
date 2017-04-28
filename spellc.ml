@@ -1,9 +1,9 @@
 (* -------------------------------------------------------------------------- *)
 (* ----------------------- TP2 - IFT-3000 - Hiver 2017 ---------------------- *)
 (* -------------------------------------------------------------------------- *)
-(* Matricule étudiant: .........                                              *)
-(* Matricule étudiant: .........                                              *)
-(* Matricule étudiant: .........                                              *)
+(* Matricule étudiant: 111 166 179                                            *)
+(* Matricule étudiant: 111 090 818                                            *)
+(* Matricule étudiant: 111 163 730                                            *)
 (* -------------------------------------------------------------------------- *)
 (* -- PRINCIPALE FICHIER DU TP ---------------------- ----------------------- *)
 (* -------------------------------------------------------------------------- *)
@@ -140,10 +140,10 @@ module Spellc = struct
     hash
 
   let add_bol lw =
-    L.map (fun x -> ["<s>"] @ x) lw
+    L.map (fun x -> [bol] @ x) lw
 
   let add_eol lw =
-    L.map (fun x -> ["<s>"] @ x @ ["</s>"]) lw
+    L.map (fun x -> [bol] @ x @ [eol]) lw
 
   let plw_freq llw = let rec aux_liste l acc = match l with
     | x::r when r != [] -> aux_liste r (acc@[(x,List.hd r)])
@@ -261,13 +261,13 @@ module Spellc = struct
   (* @Postcondition : le résultat retourné est correct.                       *)
   (* ------------------------------------------------------------------------ *)
 
-  let compte_redondance l = 
+  let compte_redondance l =
     let liste_triee = List.sort compare l in
     match liste_triee with
       | [] -> []
-      | e::r -> 
-        let acc,x,c = List.fold_left (fun (acc,x,c) y -> if y = x 
-                                        then acc,x,c+1 
+      | e::r ->
+        let acc,x,c = List.fold_left (fun (acc,x,c) y -> if y = x
+                                        then acc,x,c+1
                                         else (x,c)::acc, y,1) ([],e,1) r in
         (x,c)::acc
 
@@ -277,7 +277,7 @@ module Spellc = struct
     let paires = word_pair_list file in
     let paires' = List.map fst paires in
     let char_liste = List.flatten (List.map c_cc_gen paires') in
-    let frequence_liste = compte_redondance char_liste in 
+    let frequence_liste = compte_redondance char_liste in
     List.iter (fun (key,value) -> H.add cpcf key value ) frequence_liste;
     cpcf
 
@@ -300,7 +300,7 @@ module Spellc = struct
     | INS(x,y) -> (float_of_int(insm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((safe_ihfind cpcf (String.make 1 y))+_K))
     | SUB(x,y) -> (float_of_int(subm.(i_fromChar y).(i_fromChar x)+1)) /. (float_of_int((safe_ihfind cpcf (String.make 1 x))+_K))
     | TRANS(x,y) -> (float_of_int(tram.(i_fromChar x).(i_fromChar y)+1)) /. (float_of_int((safe_ihfind cpcf ((String.make 1 x)^(String.make 1 y)))+_K))
- 
+
 
   (* --  À IMPLANTER/COMPLÉTER (4 PTS) ------ Fonction prob_xw -------------- *)
   (* @Fonction      : operation list -> float                                 *)
@@ -347,12 +347,12 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : les mots retournés appartiennent à la table wf.         *)
   (* ------------------------------------------------------------------------ *)
-  let find_candidates ?(k = 2) x = 
+  let find_candidates ?(k = 2) x =
     let l = H.fold (fun x' y z -> x'::z) wf [] in
-      let (l1,_) = List.partition 
-            (fun e -> (String.length e) <= (2 + String.length x) 
+      let (l1,_) = List.partition
+            (fun e -> (String.length e) <= (2 + String.length x)
             && (String.length e) >= (-2+String.length x)
-            && (fun (i,l') -> i <= 2) (dist x e) ) 
+            && (fun (i,l') -> i <= 2) (dist x e) )
             l in
         let reponse = List.map (fun s -> (s,snd (dist s x))) l1 in reponse
 
@@ -371,7 +371,7 @@ module Spellc = struct
     | _ -> let mots_prob = List.map (fun (s,ops) -> (s, prob_xw_uwv ~u:u ~v:v x ops)) cand in
              let prob_mots = List.map (fun (a,b) -> (b,a)) mots_prob in
                let rec aux l = match l with
-                | [] -> failwith "erreur in best_candidate liste vide "
+                | [] -> failwith "erreur in best_candidate liste vide"
                 | [x] -> x
                 | e::r -> max e (aux r) in
                snd (aux prob_mots)
@@ -384,14 +384,14 @@ module Spellc = struct
   (* @Precondition  : aucune.                                                 *)
   (* @Postcondition : les mots dans la liste résultant proviennent de lwords. *)
   (* ------------------------------------------------------------------------ *)
-  let tri_gramme lwords = match lwords with 
+  let tri_gramme lwords = match lwords with
     | []->[]
-    | [x]->[("<s>",x,"</s>")]
+    | [x]->[(bol,x,eol)]
     | x::r-> let rec aux l acc = match l with
               | e1::e2::e3::r -> aux (e2::e3::r) (acc@[(e1,e2,e3)])
-              | [x;y] -> acc@[(x,y,"</s>")] 
+              | [x;y] -> acc@[(x,y,eol)]
               | _ -> [] in
-    aux (x::r) [("<s>",x,List.hd r)]
+    aux (x::r) [(bol,x,List.hd r)]
 
 
   (* --  À IMPLANTER/COMPLÉTER (10 PTS) ------ Fonction revise_lwords ------- *)
@@ -454,7 +454,30 @@ module Spellc = struct
   (* ------------------------------------------------------------------------ *)
   let dict = creer (ht_to_list fst wf)
 
+  let sort_cand_aux cand_aux:(string * float) list =
+    L.sort (fun x y -> if snd y > snd x then 1 else 0) cand_aux
+
+  let safe_lprefix dict pref =
+    try liste_par_prefixe dict pref
+    with Not_found -> ["Not_found"]
+
   let find_cand_aux ?(k = 2) ?(u = bol) pref =
+    let lwpf = ht_to_list fst wpf in
+    match u,pref with
+      | (u, "") when u = bol -> let bol_l = L.rev(L.filter (fun x -> S.equal (fst x) bol) lwpf) in
+          let cand_aux = L.map (fun x -> ((snd x), prob_uwv ~u:(fst x) (snd x))) bol_l in
+          sort_cand_aux cand_aux
+      | (u, pref) ->
+          let l_prefix = safe_lprefix dict pref in
+          if L.hd l_prefix = "Not_found" then
+            let f_cand = find_candidates ~k:k pref in
+            let cand_aux = L.map (fun x -> ((fst x), prob_xw_uwv ~u:u (fst x) (snd x))) f_cand in
+            sort_cand_aux cand_aux
+          else
+            let cand_aux = L.map (fun x -> (x, prob_uwv ~u:u x)) l_prefix in
+            sort_cand_aux cand_aux
+
+
     (* Remplacer la ligne suivante par votre code *)
     (* raise (Non_Implante "«find_cand_aux» à compléter") *)
 
